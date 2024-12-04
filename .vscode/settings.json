@@ -9,5 +9,9 @@
         "c:\\javafx-sdk-23.0.1\\lib\\javafx.swing.jar",
         "c:\\javafx-sdk-23.0.1\\lib\\javafx.web.jar",
         "c:\\javafx-sdk-23.0.1\\lib\\javafx-swt.jar"
+    ],
+    "java.project.sourcePaths": [
+        "src",
+        "demo/src/main/java/tes"
     ]
 }
