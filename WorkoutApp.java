@@ -8,6 +8,7 @@ import java.awt.event.ActionListener;
 
 public class WorkoutApp {
     private JPanel mainPanel;
+    private CardLayout cardLayout;
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> new WorkoutApp().createAndShowGUI());
@@ -20,9 +21,28 @@ public class WorkoutApp {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLayout(new BorderLayout());
 
+        cardLayout = new CardLayout();
+        mainPanel = new JPanel(cardLayout);
+
+        JPanel descPanel = createDescPanel();
+        mainPanel.add(descPanel, "Deskripsi");
+
+        JPanel workoutListPanel = createWorkoutListPanel();
+        mainPanel.add(workoutListPanel, "WorkoutList");
+
+        // Tambahkan panel utama ke frame
+        frame.add(mainPanel, BorderLayout.CENTER);
+        frame.setVisible(true);
+    }
+
+    private JPanel createDescPanel() {
+        // JPanel descPanel = new JPanel();
+        // descPanel.setLayout(new BoxLayout(descPanel, BoxLayout.Y_AXIS));
+        // descPanel.setBackground(Color.WHITE);
+
         // Panel utama (Panel 1)
-        JPanel mainPanel = new JPanel();
-        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+        JPanel descPanel = new JPanel();
+        descPanel.setLayout(new BoxLayout(descPanel, BoxLayout.Y_AXIS));
 
         // Panel 1.1: Indikator HP
         JPanel panel11 = new JPanel();
@@ -41,7 +61,7 @@ public class WorkoutApp {
 
         // panel11.add(indicatorLabel, BorderLayout.CENTER);
         panel11.add(indicatorLabel);
-        mainPanel.add(panel11);
+        descPanel.add(panel11);
         // Menambahkan panel11 ke mainPanel di bagian NORTH
         // mainPanel.add(panel11, BorderLayout.NORTH);
 
@@ -167,6 +187,8 @@ public class WorkoutApp {
         startWorkoutButton.setBackground(Color.decode("#8A9C60"));
         startWorkoutButton.setForeground(Color.WHITE);
         startWorkoutButton.setFocusPainted(false);
+
+        startWorkoutButton.addActionListener(e -> cardLayout.show(mainPanel, "WorkoutList"));
         panelButton.add(startWorkoutButton);
 
         startWorkoutButton.setPreferredSize(new Dimension(330, 50));
@@ -177,11 +199,90 @@ public class WorkoutApp {
         panel12.add(panelButton);
 
         // // Tambahkan panel 1.1 dan 1.2 ke panel utama
-        mainPanel.add(panel12);
+        descPanel.add(panel12);
+        return descPanel;
+    }
 
-        // Tambahkan panel utama ke frame
-        frame.add(mainPanel, BorderLayout.CENTER);
-        frame.setVisible(true);
+    private JPanel createWorkoutListPanel() {
+        JPanel workoutListPanel = new JPanel();
+        workoutListPanel.setLayout(new BoxLayout(workoutListPanel,
+                BoxLayout.Y_AXIS));
+        workoutListPanel.setBackground(Color.WHITE);
+
+        JPanel headerPanel = new JPanel();
+        // headerPanel.setLayout(new BorderLayout());
+        headerPanel.setLayout(new BoxLayout(headerPanel, BoxLayout.X_AXIS));
+        headerPanel.setBackground(Color.WHITE);
+
+        Border matteBorder = BorderFactory.createMatteBorder(0, 0, 2, 0, Color.decode("#8A9C60"));
+        Border emptyBorder = new EmptyBorder(15, 20, 0, 20);
+        Border combinedBorder = BorderFactory.createCompoundBorder(emptyBorder, matteBorder);
+        headerPanel.setBorder(combinedBorder);
+
+        ImageIcon backIcon = new ImageIcon("assets/icon/icon_button_back.png");
+        Image img2 = backIcon.getImage();
+        Image resizedImage2 = img2.getScaledInstance(25, 25, Image.SCALE_SMOOTH);
+        backIcon = new ImageIcon(resizedImage2);
+
+        JButton backButton = new JButton(backIcon);
+        backButton.setContentAreaFilled(false);
+        backButton.setBorderPainted(false);
+        backButton.setFocusPainted(false);
+        backButton.addActionListener(e -> cardLayout.show(mainPanel, "Deskripsi"));
+
+        JLabel headerLabel = new JLabel("ABS");
+        headerLabel.setFont(new Font("Lato", Font.BOLD, 20));
+        headerLabel.setForeground(Color.decode("#8A9C60"));
+
+        headerPanel.add(backButton);
+        headerPanel.add(Box.createHorizontalStrut(90));
+        headerPanel.add(headerLabel);
+        headerPanel.add(Box.createHorizontalGlue());
+        headerPanel.setMaximumSize(new Dimension(390, 50));
+        headerPanel.setMinimumSize(new Dimension(390, 50));
+        headerPanel.setPreferredSize(new Dimension(390, 50));
+
+        JPanel awalPanel = new JPanel();
+        awalPanel.setLayout(new BoxLayout(awalPanel, BoxLayout.Y_AXIS));
+        awalPanel.setBackground(Color.WHITE);
+        awalPanel.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.BLACK));
+
+        JLabel tanpaAlatLabel = new JLabel("Tanpa Alat");
+        tanpaAlatLabel.setFont(new Font("Lato", Font.BOLD, 16));
+        tanpaAlatLabel.setForeground(Color.BLACK);
+        tanpaAlatLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        awalPanel.add(tanpaAlatLabel);
+        awalPanel.add(Box.createVerticalStrut(5));
+
+        // Durasi, latihan dan kalori
+        JPanel infoPanel = new JPanel();
+        infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.X_AXIS));
+        infoPanel.setBackground(Color.WHITE);
+
+        ImageIcon durationIcon = new ImageIcon("assets/icon/icon_durasi.png");
+        Image dur = durationIcon.getImage();
+        Image resize = dur.getScaledInstance(20, 20, Image.SCALE_SMOOTH);
+        durationIcon = new ImageIcon(resize);
+
+        JLabel durationIconLabel = new JLabel(durationIcon);
+        JLabel durationLabel = new JLabel("7:24");
+        durationLabel.setFont(new Font("Lato", Font.PLAIN, 14));
+        durationLabel.setForeground(Color.BLACK);
+
+        JPanel durationPanel = new JPanel();
+        durationPanel.setLayout(new BoxLayout(durationPanel, BoxLayout.X_AXIS));
+        durationPanel.setBackground(Color.WHITE);
+        durationPanel.add(durationIconLabel);
+        durationPanel.add(Box.createHorizontalStrut(5));
+        durationPanel.add(durationLabel);
+
+        infoPanel.add(durationPanel);
+
+        workoutListPanel.add(headerPanel, BorderLayout.NORTH);
+        workoutListPanel.add(awalPanel);
+        workoutListPanel.add(infoPanel);
+        return workoutListPanel;
     }
 
     class RoundedButton extends JButton {
