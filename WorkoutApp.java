@@ -2,9 +2,13 @@ import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.awt.geom.Ellipse2D;
 import java.awt.geom.RoundRectangle2D;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+// import java.util.ArrayList;
+import java.util.List;
+// import java.awt.event.ActionEvent;
+// import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 
 public class WorkoutApp {
     private JPanel mainPanel;
@@ -12,6 +16,17 @@ public class WorkoutApp {
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> new WorkoutApp().createAndShowGUI());
+
+        WorkoutVideoList newVideo = new WorkoutVideoList("Stright Leg Sit Up", 25,
+                "assets\\gambar\\Stright_Leg_Sit_Up.png",
+                "-");
+        WorkoutVideoList newVideo2 = new WorkoutVideoList("Elevated Heels Slide", 25,
+                "assets\\gambar\\ELEVATED.png", "-");
+        WorkoutVideoList newVideo3 = new WorkoutVideoList("Superman", 25,
+                "assets\\gambar\\Superman.png", "-");
+        WorkoutVidepDAO.save(newVideo);
+        WorkoutVidepDAO.save(newVideo2);
+        WorkoutVidepDAO.save(newVideo3);
     }
 
     public void createAndShowGUI() {
@@ -203,6 +218,49 @@ public class WorkoutApp {
         return descPanel;
     }
 
+    private JPanel createInfoPanel(String labelText, String valueText, String iconPath) {
+        JPanel infoPanel = new JPanel();
+        infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.Y_AXIS));
+        infoPanel.setBackground(Color.WHITE);
+
+        infoPanel.setPreferredSize(new Dimension(infoPanel.getPreferredSize().width, 50)); // Lebar otomatis, tinggi 15
+        infoPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 50)); // Batasi tinggi maksimum
+        infoPanel.setMinimumSize(new Dimension(infoPanel.getMinimumSize().width, 50)); // Tinggi minimum 15
+
+        // Label atas (Durasi, Latihan, Kalori)
+        JLabel label = new JLabel(labelText);
+        label.setFont(new Font("Lato", Font.PLAIN, 12));
+        label.setForeground(Color.BLACK);
+        label.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        // Panel bawah (Icon dan nilai)
+        JPanel subPanel = new JPanel();
+        subPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 1, 1));
+        subPanel.setBackground(Color.WHITE);
+
+        subPanel.setPreferredSize(new Dimension(subPanel.getPreferredSize().width, 15));
+        subPanel.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.BLACK));
+
+        ImageIcon icon = new ImageIcon(iconPath);
+        Image img = icon.getImage();
+        Image resizedImg = img.getScaledInstance(20, 20, Image.SCALE_SMOOTH);
+        icon = new ImageIcon(resizedImg);
+        JLabel iconLabel = new JLabel(icon);
+
+        JLabel valueLabel = new JLabel(valueText);
+        valueLabel.setFont(new Font("Lato", Font.PLAIN, 12));
+        valueLabel.setForeground(Color.BLACK);
+
+        subPanel.add(iconLabel);
+        subPanel.add(valueLabel);
+
+        infoPanel.add(label);
+        infoPanel.add(Box.createVerticalStrut(5));
+        infoPanel.add(subPanel);
+
+        return infoPanel;
+    }
+
     private JPanel createWorkoutListPanel() {
         JPanel workoutListPanel = new JPanel();
         workoutListPanel.setLayout(new BoxLayout(workoutListPanel,
@@ -245,43 +303,121 @@ public class WorkoutApp {
         JPanel awalPanel = new JPanel();
         awalPanel.setLayout(new BoxLayout(awalPanel, BoxLayout.Y_AXIS));
         awalPanel.setBackground(Color.WHITE);
-        awalPanel.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.BLACK));
+
+        JPanel labelPanel = new JPanel();
+        labelPanel.setLayout(new BoxLayout(labelPanel, BoxLayout.X_AXIS));
+        labelPanel.setBackground(Color.WHITE);
+        labelPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        labelPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 100));
+        labelPanel.setPreferredSize(new Dimension(labelPanel.getPreferredSize().width, 30));
 
         JLabel tanpaAlatLabel = new JLabel("Tanpa Alat");
         tanpaAlatLabel.setFont(new Font("Lato", Font.BOLD, 16));
         tanpaAlatLabel.setForeground(Color.BLACK);
-        tanpaAlatLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        tanpaAlatLabel.setHorizontalAlignment(SwingConstants.LEFT);
+        labelPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        awalPanel.add(tanpaAlatLabel);
+        labelPanel.add(tanpaAlatLabel);
+        awalPanel.add(labelPanel);
         awalPanel.add(Box.createVerticalStrut(5));
 
-        // Durasi, latihan dan kalori
-        JPanel infoPanel = new JPanel();
-        infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.X_AXIS));
-        infoPanel.setBackground(Color.WHITE);
+        JPanel infoRowPanel = new JPanel();
+        infoRowPanel.setLayout(new BoxLayout(infoRowPanel, BoxLayout.X_AXIS));
+        infoRowPanel.setBackground(Color.WHITE);
+        infoRowPanel.setBorder(BorderFactory.createEmptyBorder(0, 20, 0, 20));
 
-        ImageIcon durationIcon = new ImageIcon("assets/icon/icon_durasi.png");
-        Image dur = durationIcon.getImage();
-        Image resize = dur.getScaledInstance(20, 20, Image.SCALE_SMOOTH);
-        durationIcon = new ImageIcon(resize);
+        JPanel durasiPanel = createInfoPanel("Durasi", "7:24", "assets/icon/icon_durasi.png");
+        JPanel latihanPanel = createInfoPanel("Latihan", "12", "assets/icon/icon_latihan.png");
+        JPanel kaloriPanel = createInfoPanel("Kalori", "50 kkal", "assets/icon/icon_api_kalori.png");
 
-        JLabel durationIconLabel = new JLabel(durationIcon);
-        JLabel durationLabel = new JLabel("7:24");
-        durationLabel.setFont(new Font("Lato", Font.PLAIN, 14));
-        durationLabel.setForeground(Color.BLACK);
+        infoRowPanel.add(durasiPanel);
+        infoRowPanel.add(Box.createVerticalStrut(5));
+        infoRowPanel.add(latihanPanel);
+        infoRowPanel.add(Box.createVerticalStrut(5));
+        infoRowPanel.add(kaloriPanel);
 
-        JPanel durationPanel = new JPanel();
-        durationPanel.setLayout(new BoxLayout(durationPanel, BoxLayout.X_AXIS));
-        durationPanel.setBackground(Color.WHITE);
-        durationPanel.add(durationIconLabel);
-        durationPanel.add(Box.createHorizontalStrut(5));
-        durationPanel.add(durationLabel);
-
-        infoPanel.add(durationPanel);
+        awalPanel.add(infoRowPanel);
 
         workoutListPanel.add(headerPanel, BorderLayout.NORTH);
-        workoutListPanel.add(awalPanel);
-        workoutListPanel.add(infoPanel);
+
+        // workoutListPanel.add(infoPanel);
+
+        JPanel contentPanel = new JPanel();
+        contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
+        contentPanel.setBackground(Color.WHITE);
+        contentPanel.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
+
+        List<WorkoutVideoList> videoList = WorkoutVidepDAO.fetchAll();
+
+        JPanel listPanel = new JPanel();
+        listPanel.setLayout(new BoxLayout(listPanel, BoxLayout.Y_AXIS));
+        // listPanel.setBackground(Color.GREEN);
+        listPanel.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
+
+        for (WorkoutVideoList video : videoList) {
+
+            RoundedButton videoPanel = new RoundedButton(10);
+            videoPanel.setLayout(new BoxLayout(videoPanel, BoxLayout.X_AXIS));
+            videoPanel.setBackground(Color.WHITE);
+            videoPanel.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
+            videoPanel.setPreferredSize(new Dimension(330, 70));
+            videoPanel.setMaximumSize(new Dimension(330, 70));
+
+            videoPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
+
+            JPanel imagePanel = new JPanel();
+            // imagePanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+            imagePanel.setLayout(new GridBagLayout());
+            imagePanel.setPreferredSize(new Dimension(70, 50));
+            imagePanel.setMaximumSize(new Dimension(70, 50));
+            imagePanel.setBackground(Color.WHITE);
+
+            ImageIcon resizedIcon = resizeImageWithCanvas(video.getImagePath(), 50, 50);
+            JLabel imageLabel = new JLabel(resizedIcon);
+            imagePanel.add(imageLabel);
+            imagePanel.setBorder(BorderFactory.createEmptyBorder(0, 15, 0, 0));
+
+            JPanel textPanel = new JPanel();
+            textPanel.setLayout(new BoxLayout(textPanel, BoxLayout.Y_AXIS));
+            textPanel.setBackground(Color.WHITE);
+
+            JLabel titleLabel = new JLabel(video.getTitle());
+            titleLabel.setFont(new Font("Lato", Font.BOLD, 14));
+            titleLabel.setForeground(Color.BLACK);
+            textPanel.add(titleLabel);
+
+            // Panel untuk durasi
+            JLabel durationLabel = new JLabel(video.getDuration() + " detik");
+            durationLabel.setFont(new Font("Lato", Font.PLAIN, 12));
+            durationLabel.setForeground(Color.BLACK);
+            textPanel.add(durationLabel);
+
+            videoPanel.add(imagePanel);
+            videoPanel.add(Box.createRigidArea(new Dimension(10, 0)));
+            videoPanel.add(textPanel);
+            videoPanel.setOpaque(false);
+
+            listPanel.add(videoPanel);
+            listPanel.add(Box.createVerticalStrut(10));
+        }
+
+        listPanel.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+        listPanel.setBackground(Color.WHITE);
+        listPanel.setOpaque(false);
+
+        JScrollPane scrollPane = new JScrollPane(listPanel);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane.getViewport().setOpaque(false);
+        scrollPane.setOpaque(false);
+
+        contentPanel.add(awalPanel);
+        contentPanel.add(scrollPane);
+
+        listPanel.revalidate();
+        listPanel.repaint();
+
+        workoutListPanel.add(contentPanel, BorderLayout.CENTER);
         return workoutListPanel;
     }
 
@@ -296,13 +432,51 @@ public class WorkoutApp {
             setBorderPainted(false);
         }
 
+        public RoundedButton(int radius) {
+            this.radius = radius;
+            setContentAreaFilled(false);
+            setFocusPainted(false);
+            setBorderPainted(false);
+        }
+
         protected void paintComponent(Graphics g) {
             Graphics2D g2 = (Graphics2D) g;
             g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
             g2.setColor(getBackground());
             g2.fill(new RoundRectangle2D.Double(0, 0, getWidth(), getHeight(), radius, radius));
+
+            // g2.fill(new RoundRectangle2D.Double(3, 3, getWidth() - 6, getHeight() - 6,
+            // radius, radius));
+
+            for (int i = 1; i <= 2; i++) { // Draw multiple layers
+                g2.setColor(new Color(128, 128, 128, 35 - (i * 10))); // Adjust alpha for transparency
+                g2.draw(new RoundRectangle2D.Double(i, i, getWidth() - i * 2, getHeight() - i * 2, radius, radius));
+            }
+
+            // g2.setColor(Color.GRAY);
+            g2.draw(new RoundRectangle2D.Double(1, 1, getWidth() - 2, getHeight() - 2, radius, radius));
             super.paintComponent(g);
         }
 
+    }
+
+    public ImageIcon resizeImageWithCanvas(String imagePath, int width, int height) {
+        ImageIcon icon = new ImageIcon(imagePath);
+        Image img = icon.getImage();
+
+        // Membuat canvas 50x50
+        BufferedImage canvas = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2d = canvas.createGraphics();
+
+        // Gambar ulang gambar pada canvas dengan ukuran baru
+        int radius = 1;
+        g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+        // g2d.drawImage(img, x, y, scaledWidth, scaledHeight, null);
+        g2d.setClip(new RoundRectangle2D.Double(0, 0, width, height, radius, radius));
+        g2d.drawImage(img, 0, 0, width, height, null);
+        g2d.dispose();
+
+        return new ImageIcon(canvas);
     }
 }
