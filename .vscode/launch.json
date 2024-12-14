@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "WorkoutAppWithVideo",
+            "request": "launch",
+            "mainClass": "WorkoutAppWithVideo",
+            "projectName": "Project-PBO_Goalfit_KLP13_4deb6f0c"
+        },
+        {
+            "type": "java",
             "name": "WorkoutDetailPage",
             "request": "launch",
             "mainClass": "WorkoutDetailPage",

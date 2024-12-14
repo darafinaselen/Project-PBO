@@ -6,7 +6,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.control.ScrollPane;
 import javafx.stage.Stage;
 
 public class WorkoutDetailPage extends Application {
@@ -27,6 +29,22 @@ public class WorkoutDetailPage extends Application {
         root.setPadding(new Insets(30)); // Padding lebih besar agar terlihat rapi
         root.setAlignment(Pos.TOP_CENTER);
         root.setStyle("-fx-background-color: #ffffff;");
+
+        // Tombol kembali di pojok kiri atas
+        Button backButton = new Button();
+        ImageView backIcon = new ImageView(new Image("file:assets/icon/icon_button_back.png"));
+        backIcon.setFitWidth(30); // Ukuran ikon
+        backIcon.setFitHeight(30);
+        backButton.setGraphic(backIcon);
+        backButton.setStyle("-fx-background-color: transparent; -fx-cursor: hand;"); // Tampilan tombol transparan
+        backButton.setOnAction(e -> {
+            try {
+                new HomePage().start(new Stage()); // Kembali ke HomePage
+                primaryStage.close(); // Menutup WorkoutDetailPage
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        });
 
         // Gambar workout
         ImageView imageView = new ImageView(new Image("file:asetttt/Workout/" + workoutTitle + ".jpg"));
@@ -58,8 +76,20 @@ public class WorkoutDetailPage extends Application {
         // Menambahkan elemen ke layout
         root.getChildren().addAll(imageView, titleLabel, descriptionLabel, startButton);
 
+        // Membuat ScrollPane agar konten dapat digulir
+        ScrollPane scrollPane = new ScrollPane(root);
+        scrollPane.setFitToWidth(true); // Menyesuaikan lebar konten
+        scrollPane.setPannable(true); // Mengaktifkan pengguliran horizontal
+        scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED); // Menampilkan scrollbar horizontal jika diperlukan
+        scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED); // Menampilkan scrollbar vertikal jika diperlukan
+
+        // Layout utama dengan tombol kembali
+        StackPane mainLayout = new StackPane();
+        StackPane.setAlignment(backButton, Pos.TOP_LEFT); // Posisi tombol kembali di pojok kiri atas
+        mainLayout.getChildren().addAll(scrollPane, backButton);
+
         // Scene setup dengan ukuran 390x700
-        Scene scene = new Scene(root, 390, 700);
+        Scene scene = new Scene(mainLayout, 390, 700);
         primaryStage.setScene(scene);
         primaryStage.show();
     }
@@ -68,14 +98,17 @@ public class WorkoutDetailPage extends Application {
     private String getDescriptionForWorkout(String workoutTitle) {
         switch (workoutTitle) {
             case "ABS":
-                return "Waktu terbatas? Kamu tetap bisa melatih otot perut secara efektif hanya dalam 7 menit! Perkuat abs, tingkatkan stabilitas, dan rasakan hasilnya—cocok untuk jadwal padatmu!";
+                return "ABS adalah singkatan dari abdominal muscles atau otot perut, yang merujuk pada kelompok otot yang terletak di area perut bagian depan. Otot-otot ini memiliki beberapa bagian, yang masing-masing memiliki fungsi yang berbeda.";
             case "Upper Body":
-                return "Tingkatkan kekuatan tubuh bagian atas dengan latihan yang dirancang untuk melatih otot bahu, dada, dan lengan. Cocok untuk semua level.";
-            case "Buns n' Legs":
-                return "Latihan intensif untuk mengencangkan dan memperkuat otot kaki dan bokong. Dapatkan bentuk tubuh ideal dengan rutinitas ini.";
+                return "Upper body merujuk pada bagian tubuh manusia yang terletak di bagian atas, mulai dari leher hingga pinggang, yang mencakup kepala, leher, dada, punggung atas, bahu, dan lengan atas. Latihan upper body bertujuan untuk memperkuat dan membentuk otot-otot di bagian tubuh ini, yang meliputi otot dada (pectoralis), otot punggung (latissimus dorsi dan trapezius), otot bahu (deltoid), serta otot lengan (bisep dan trisep).";
+            case "Buns n' Trights":
+                return "Buns and Thighs adalah latihan yang berfokus pada penguatan dan pembentukan otot gluteus (bokong) serta paha. Latihan ini sering melibatkan gerakan seperti squats, lunges, dan bridges untuk melatih otot secara maksimal.";
+            case "HIIT":
+                return "HIIT (High-Intensity Interval Training) adalah jenis latihan kardio yang melibatkan periode latihan intensitas tinggi yang diikuti oleh periode istirahat singkat. Metode ini dirancang untuk membakar kalori secara efisien dan meningkatkan kebugaran kardiovaskular.";
+            case "Full Body":
+                return "Latihan Full Body dirancang untuk melatih semua kelompok otot utama dalam satu sesi latihan. Cocok untuk meningkatkan kekuatan tubuh secara keseluruhan dan membakar kalori dalam waktu singkat.";
             default:
                 return "Latihan ini dirancang untuk membantu meningkatkan kesehatan dan kebugaran secara keseluruhan.";
         }
     }
-
 }

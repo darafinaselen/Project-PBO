@@ -1,3 +1,5 @@
+import javax.swing.JScrollPane;
+
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -9,12 +11,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
-import javafx.scene.layout.Region;
-
 
 public class HomePage extends Application {
 
@@ -41,19 +40,30 @@ public class HomePage extends Application {
         contentArea = new VBox(10);
         contentArea.setPadding(new Insets(10));
         contentArea.setAlignment(Pos.TOP_LEFT);
-        
+
         // Default: tampilkan konten "For You"
         showForYouContent();
 
         ScrollPane scrollPane = new ScrollPane(contentArea);
         scrollPane.setFitToWidth(true);
         scrollPane.setStyle("-fx-background-color: transparent;");
+        hideScrollBars(scrollPane); // Sembunyikan scrollbar
         root.getChildren().add(scrollPane);
 
         // Scene setup
         Scene scene = new Scene(root, 390, 700);
         primaryStage.setScene(scene);
         primaryStage.show();
+    }
+
+    // Sembunyikan scrollbar
+    private void hideScrollBars(ScrollPane scrollPane) {
+        scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        scrollPane.setStyle("-fx-background-color: transparent; " +
+                        "-fx-background-insets: 0; " +
+                        "-fx-padding: 0;"
+        );
     }
 
     // Search Bar
@@ -94,42 +104,72 @@ public class HomePage extends Application {
         return tabs;
     }
 
-    // Konten "For You"
-    private void showForYouContent() {
-        contentArea.getChildren().clear();
-    
-        // Label Rekomendasi Untuk Anda (bold)
-        Label label = new Label("Rekomendasi Untuk Anda");
-        label.setFont(Font.font("Arial", javafx.scene.text.FontWeight.BOLD, 16));
-        contentArea.getChildren().add(label);
-    
-        // Konten Workout - dengan scroll horizontal dan tidak bisa ke bawah
-        HBox workoutSection = createWorkoutSection();  // Menggunakan HBox untuk scroll horizontal
-        ScrollPane workoutScrollPane = new ScrollPane(workoutSection);
-        workoutScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED); // Scroll horizontal aktif
-        workoutScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER); // Tidak ada scroll vertikal
-        workoutScrollPane.setFitToHeight(true);
-        workoutScrollPane.setFitToWidth(true);
-        contentArea.getChildren().add(workoutScrollPane);
-    
-        // Konten Meals tetap bisa scroll vertikal
-        Label mealsLabel = new Label("Meals");
-        mealsLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 14;");
-        contentArea.getChildren().add(mealsLabel);
-    
-        VBox mealsSection = createMealsSection();  // Menggunakan VBox untuk scroll vertikal
-        ScrollPane mealsScrollPane = new ScrollPane(mealsSection);
-        mealsScrollPane.setFitToWidth(true);
-        mealsScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED); // Vertical scroll
-        mealsScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER); // Tidak bisa scroll horizontal
-        contentArea.getChildren().add(mealsScrollPane);
-    }
+    // yg bawah
+    // private HBox createTab() {
+    //     Button homeTab = new Button("assets\\Icons\\home.png");
+    //     Button jadwalTab = new Button("assets\\Icons\\chat.png");
+    //     Button profilTab = new Button("assets\\Icons\\profile.png");
 
+    //     homeTab.setStyle("-fx-background-color: #e8f5e9;");
+    //     jadwalTab.setStyle("-fx-background-color: #e8f5e9;");
+    //     profilTab.setStyle("-fx-background-color: #e8f5e9;");
+
+    //     homeTab.setOnAction(e -> showForYouContent());
+    //     jadwalTab.setOnAction(e -> showWorkoutContent());
+    //     profilTab.setOnAction(e -> showMealsContent());
+
+    //     HBox tabs = new HBox(10, homeTab, jadwalTab, profilTab);
+    //     tabs.setAlignment(Pos.CENTER);
+    //     return tabs;
+    // }
+
+    // Konten "For You"
+    // Konten "For You"
+private void showForYouContent() {
+    contentArea.getChildren().clear();
+    
+    // Label Rekomendasi Untuk Anda (bold)
+    Label label = new Label("Rekomendasi Untuk Anda");
+    label.setFont(Font.font("Arial", javafx.scene.text.FontWeight.BOLD, 16));
+    contentArea.getChildren().add(label);
+    
+    // Konten Workout - dengan scroll horizontal dan tidak bisa ke bawah
+    HBox workoutSection = createWorkoutSection();  // Menggunakan HBox untuk scroll horizontal
+    ScrollPane workoutScrollPane = new ScrollPane(workoutSection);
+    workoutScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED); // Scroll horizontal aktif
+    workoutScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER); // Tidak ada scroll vertikal
+    workoutScrollPane.setFitToHeight(true);
+    workoutScrollPane.setFitToWidth(true);
+    workoutScrollPane.setStyle(
+        "-fx-background-color: transparent; " +
+        "-fx-padding: 0; " +
+        "-fx-border-color: transparent; " +
+        "-fx-control-inner-background: transparent; " + 
+        "-fx-scroll-bar: hidden;");
+    contentArea.getChildren().add(workoutScrollPane);
+    
+    // Konten Meals tetap bisa scroll vertikal
+    Label mealsLabel = new Label("Meals");
+    mealsLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 14;");
+    contentArea.getChildren().add(mealsLabel);
+    
+    VBox mealsSection = createMealsSection();  // Menggunakan VBox untuk scroll vertikal
+    ScrollPane mealsScrollPane = new ScrollPane(mealsSection);
+    mealsScrollPane.setFitToWidth(true);
+    mealsScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED); // Vertical scroll
+    mealsScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER); // Tidak bisa scroll horizontal
+    mealsScrollPane.setStyle(
+        "-fx-background-color: transparent; " +
+        "-fx-padding: 0; " +
+        "-fx-border-color: transparent; " +
+        "-fx-control-inner-background: transparent; " + 
+        "-fx-scroll-bar: hidden;");
+    contentArea.getChildren().add(mealsScrollPane);
+}
 
     // Konten "Workout"
     private void showWorkoutContent() {
         contentArea.getChildren().clear();
-
         contentArea.getChildren().add(new Label("Workout Harian di Rumah"));
         contentArea.getChildren().add(createWorkoutSection());
     }
@@ -137,7 +177,6 @@ public class HomePage extends Application {
     // Konten "Meals"
     private void showMealsContent() {
         contentArea.getChildren().clear();
-
         contentArea.getChildren().add(new Label("Pola Makan Harian"));
         contentArea.getChildren().add(createMealsSection());
     }
@@ -150,12 +189,21 @@ private HBox createWorkoutSection() {
     workoutSection.setPrefHeight(130); 
 
     workoutSection.getChildren().addAll(
-            createWorkoutCard("ABS", "asetttt/Workout/ABS_frame.png"),
-            createWorkoutCard("Upper Body", "asetttt/Workout/Upper Body.jpg"),
-            createWorkoutCard("Buns n' Legs", "asetttt/Workout/Mediasi.png"),
-            createWorkoutCard("Buns n' Legs", "asetttt/Workout/Mediasi.png"),
-            createWorkoutCard("Buns n' Legs", "asetttt/Workout/Mediasi.png")
+        createWorkoutCard("ABS", "asetttt/Workout/ABS_frame.png"),
+        createWorkoutCard("Upper Body", "asetttt/Workout/Upper Body.jpg"),
+        createWorkoutCard("Buns n' Trights", "asetttt/Workout/Mediasi.png"),
+        createWorkoutCard("HIIT", "asetttt/Workout/Mediasi.png"),
+        createWorkoutCard("Full Body", "asetttt/Workout/Mediasi.png")
     );
+
+    // Membungkus workoutSection dalam ScrollPane untuk scroll horizontal
+    ScrollPane workoutScrollPane = new ScrollPane(workoutSection);
+    workoutScrollPane.setFitToWidth(true);  // Menyesuaikan lebar konten dengan lebar ScrollPane
+    workoutScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);  // Aktifkan scrollbar horizontal
+    workoutScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);  // Nonaktifkan scrollbar vertikal
+
+    // Sembunyikan scrollbar vertikal yang tidak perlu
+    hideScrollBars(workoutScrollPane);
 
     return workoutSection;  // Mengembalikan HBox
 }
@@ -164,26 +212,17 @@ private HBox createWorkoutSection() {
 private VBox createMealsSection() {
     VBox mealsSection = new VBox(10);  // Gunakan VBox untuk vertikal scroll
     mealsSection.getChildren().addAll(
-            createMealItem("Sarapan", "07.00", "asetttt/Meals/Ayam.jpg"),
-            createMealItem("Sarapan", "07.00", "asetttt/Meals/Ayam.jpg"),
-            createMealItem("Sarapan", "07.00", "asetttt/Meals/Ayam.jpg"),
-            createMealItem("Sarapan", "07.00", "asetttt/Meals/Ayam.jpg"),
-            createMealItem("Makan Siang", "12.00", "asetttt/Meals/Brokoli.jpeg"),
-            createMealItem("Makan Siang", "12.00", "asetttt/Meals/Brokoli.jpeg"),
-            createMealItem("Makan Siang", "12.00", "asetttt/Meals/Brokoli.jpeg"),
-            createMealItem("Makan Siang", "12.00", "asetttt/Meals/Brokoli.jpeg"),
-            createMealItem("Makan Siang", "12.00", "asetttt/Meals/Brokoli.jpeg"),
-            createMealItem("Makan Siang", "12.00", "asetttt/Meals/Brokoli.jpeg"),
-            createMealItem("Makan Siang", "12.00", "asetttt/Meals/Brokoli.jpeg"),
-            createMealItem("Makan Siang", "12.00", "asetttt/Meals/Brokoli.jpeg"),
-            createMealItem("Makan Siang", "12.00", "asetttt/Meals/Brokoli.jpeg"),
-            createMealItem("Makan Siang", "12.00", "asetttt/Meals/Brokoli.jpeg"),
-            createMealItem("Makan Siang", "12.00", "asetttt/Meals/Brokoli.jpeg"),
-            createMealItem("Makan Siang", "12.00", "asetttt/Meals/Brokoli.jpeg"),
-            createMealItem("Makan Siang", "12.00", "asetttt/Meals/Brokoli.jpeg"),
-            createMealItem("Makan Siang", "12.00", "asetttt/Meals/Brokoli.jpeg"),
-            createMealItem("Makan Siang", "12.00", "asetttt/Meals/Brokoli.jpeg"),
-            createMealItem("Makan Siang", "12.00", "asetttt/Meals/Brokoli.jpeg")
+            createMealItem("Dada Ayam", "07.00", "asetttt/Meals/Ayam.jpg"),
+            createMealItem("Brokoli", "07.00", "asetttt/Meals/Brokoli.jpeg"),
+            createMealItem("Buah", "07.00", "asetttt/Meals/Buah.jpg"),
+            createMealItem("Salad", "07.00", "asetttt/Meals/Salad.jpeg"),
+            createMealItem("Nasi Merah", "12.00", "asetttt/Meals/Nasi Merah.jpeg"),
+            createMealItem("Pisang", "12.00", "asetttt/Meals/Pisang.jpg.jpeg"),
+            createMealItem("Daging", "12.00", "asetttt/Meals/Daging.jpeg"),
+            createMealItem("Sayuran", "12.00", "asetttt/Meals/Sayuran.jpg"),
+            createMealItem("Sereal", "19.00", "asetttt/Meals/Sereal.jpeg"),
+            createMealItem("Susu", "19.00", "asetttt/Meals/Susu.jpg"),
+            createMealItem("Telur", "19.00", "asetttt/Meals/Telur.jpeg")
     );
 
     return mealsSection;  // Mengembalikan VBox
@@ -273,9 +312,6 @@ private HBox createMealItem(String name, String time, String imagePath) {
 
     return mealItem;
 }
-
-
-
 
 // Helper untuk ImageView
 private ImageView createImageView(String path, int width, int height) {

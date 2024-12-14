@@ -2,10 +2,10 @@ import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -13,7 +13,7 @@ public class MealDetailPage extends Application {
 
     private String mealTitle;
 
-    // Konstruktor untuk menerima data dari HomePage
+    // Constructor untuk menerima data dari HomePage
     public MealDetailPage(String mealTitle) {
         this.mealTitle = mealTitle;
     }
@@ -23,10 +23,13 @@ public class MealDetailPage extends Application {
         primaryStage.setTitle(mealTitle + " Detail");
 
         // Root layout
-        VBox root = new VBox(15);
-        root.setPadding(new Insets(30));
-        root.setAlignment(Pos.TOP_CENTER);
-        root.setStyle("-fx-background-color: #ffffff;");
+        StackPane root = new StackPane();
+
+        // VBox untuk konten utama
+        VBox content = new VBox(15);
+        content.setPadding(new Insets(30));
+        content.setAlignment(Pos.TOP_CENTER);
+        content.setStyle("-fx-background-color: #ffffff;");
 
         // Gambar meal
         ImageView imageView = new ImageView(new Image("file:asetttt/Meals/" + mealTitle + ".jpg"));
@@ -43,12 +46,22 @@ public class MealDetailPage extends Application {
         descriptionLabel.setWrapText(true);
         descriptionLabel.setMaxWidth(350);
 
-        // Tombol untuk kembali ke HomePage
-        Button backButton = new Button("Kembali");
-        backButton.setStyle("-fx-background-color: #4caf50; -fx-text-fill: white; -fx-font-size: 14; -fx-padding: 10 20;");
-        backButton.setOnAction(e -> primaryStage.close());
+        content.getChildren().addAll(imageView, titleLabel, descriptionLabel);
 
-        root.getChildren().addAll(imageView, titleLabel, descriptionLabel, backButton);
+        // Tombol back di pojok kiri atas
+        ImageView backIcon = new ImageView(new Image("file:assets/icon/icon_button_back.png"));
+        backIcon.setFitWidth(30);
+        backIcon.setFitHeight(30);
+        backIcon.setOnMouseClicked(e -> {
+            // Kembali ke halaman sebelumnya (HomePage)
+            primaryStage.close();
+            // Anda dapat menambahkan logika untuk membuka kembali HomePage di sini.
+        });
+
+        StackPane.setAlignment(backIcon, Pos.TOP_LEFT);
+        StackPane.setMargin(backIcon, new Insets(10));
+
+        root.getChildren().addAll(content, backIcon);
 
         // Scene setup
         Scene scene = new Scene(root, 390, 700);
@@ -59,12 +72,28 @@ public class MealDetailPage extends Application {
     // Method untuk mendapatkan deskripsi berdasarkan meal
     private String getDescriptionForMeal(String mealTitle) {
         switch (mealTitle) {
-            case "Sarapan":
-                return "Mulailah hari Anda dengan energi maksimal! Sarapan ini mengandung nutrisi penting untuk meningkatkan fokus dan daya tahan.";
-            case "Makan Siang":
-                return "Hidangan sehat dan lezat untuk mengisi tenaga di tengah hari. Kaya protein dan rendah lemak.";
-            case "Makan Malam":
-                return "Makanan ringan untuk malam hari, membantu tubuh memulihkan diri tanpa membebani pencernaan.";
+            case "Dada Ayam":
+                return "Sumber protein yang baik untuk tubuh.";
+            case "Brokoli":
+                return "Sayuran hijau yang kaya serat dan vitamin.";
+            case "Buah":
+                return "Makanan segar yang kaya vitamin dan mineral.";
+            case "Nasi Merah":
+                return "Pilihan karbohidrat sehat dengan serat tinggi.";
+            case "Pisang":
+                return "Buah yang kaya potasium untuk energi.";
+            case "Daging":
+                return "Sumber protein berkualitas tinggi.";
+            case "Sayuran":
+                return "Makanan sehat yang mengandung banyak serat.";
+            case "Sereal Oat":
+                return "Pilihan sarapan sehat yang kaya serat.";
+            case "Susu Rendah Lemak":
+                return "Sumber kalsium dengan kandungan lemak rendah.";
+            case "Telur":
+                return "Sumber protein yang sangat baik.";
+            case "Salad":
+                return "Kombinasi sayuran segar yang menyehatkan.";
             default:
                 return "Makanan ini dirancang untuk memenuhi kebutuhan gizi harian Anda.";
         }
