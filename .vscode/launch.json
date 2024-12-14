@@ -6,15 +6,38 @@
     "configurations": [
         {
             "type": "java",
+            "name": "WorkoutDetailPage",
+            "request": "launch",
+            "mainClass": "WorkoutDetailPage",
+            "projectName": "Project-PBO_Goalfit_KLP13_4deb6f0c",
+            "vmArgs": "--module-path \"C:\\javafx-sdk-23.0.1\\lib\" --add-modules javafx.controls,javafx.media"
+        },
+        {
+            "type": "java",
+            "name": "HomePage",
+            "request": "launch",
+            "mainClass": "HomePage",
+            "projectName": "Project-PBO_Goalfit_KLP13_4deb6f0c",
+            "vmArgs": "--module-path \"C:\\javafx-sdk-23.0.1\\lib\" --add-modules javafx.controls,javafx.media"
+        },
+        {
+            "type": "java",
+            "name": "WorkoutAppWithDesc",
+            "request": "launch",
+            "mainClass": "WorkoutAppWithDesc",
+            "projectName": "Project-PBO_Goalfit_KLP13_4deb6f0c"
+        },
+        {
+            "type": "java",
             "name": "Current File",
             "request": "launch",
             "mainClass": "${file}"
         },
         {
             "type": "java",
-            "name": "WorkoutAppWithVideo",
+            "name": "MainApp",
             "request": "launch",
-            "mainClass": "WorkoutAppWithVideo",
+            "mainClass": "MainApp",
             "projectName": "Project-PBO_Goalfit_KLP13_4deb6f0c",
             "vmArgs": "--module-path \"C:\\javafx-sdk-23.0.1\\lib\" --add-modules javafx.controls,javafx.media"
         }

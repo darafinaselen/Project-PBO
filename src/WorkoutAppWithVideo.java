@@ -4,7 +4,6 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -16,50 +15,62 @@ import javafx.stage.Stage;
 import java.io.File;
 
 public class WorkoutAppWithVideo extends Application {
+    private final String name;
+    private final String description;
+    private final String videoPath;
+    private int duration = 20;
 
-    private int duration = 20; // Durasi awal dalam detik
-
-    public static void main(String[] args) {
-        launch(args);
+    public WorkoutAppWithVideo(String name, String description, String videoPath) {
+        this.name = name;
+        this.description = description;
+        this.videoPath = videoPath;
     }
 
     @Override
     public void start(Stage primaryStage) {
-        primaryStage.setTitle("Workout App");
+        primaryStage.setTitle(name);
 
-        // Media player
-        String videoPath = "aset/How to Do_ JUMPING JACKS.mp4"; // Sesuaikan path file Anda
+        // Video player setup
         File videoFile = new File(videoPath);
-        if (!videoFile.exists()) {
-            System.out.println("File video tidak ditemukan: " + videoPath);
-            return;
+        MediaView mediaView;
+        MediaPlayer mediaPlayer = null;
+        if (videoFile.exists()) {
+            Media media = new Media(videoFile.toURI().toString());
+            mediaPlayer = new MediaPlayer(media);
+            mediaView = new MediaView(mediaPlayer);
+            mediaPlayer.play();
+        } else {
+            mediaView = new MediaView();
+            Label errorLabel = new Label("Video tidak ditemukan: " + videoPath);
+            errorLabel.setStyle("-fx-text-fill: red;");
+            mediaView.setMediaPlayer(null);
         }
 
-        Media media = new Media(videoFile.toURI().toString());
-        MediaPlayer mediaPlayer = new MediaPlayer(media);
-        MediaView mediaView = new MediaView(mediaPlayer);
         mediaView.setFitWidth(350);
         mediaView.setFitHeight(200);
 
         // Tambahkan event handling untuk memutar/menjeda video
+        if (mediaPlayer != null) {
+            MediaPlayer finalMediaPlayer = mediaPlayer;
         mediaView.setOnMouseClicked(event -> {
-            if (mediaPlayer.getStatus() == MediaPlayer.Status.PLAYING) {
-                mediaPlayer.pause();
+            if (finalMediaPlayer.getStatus() == MediaPlayer.Status.PLAYING) {
+                finalMediaPlayer.pause();
             } else {
-                mediaPlayer.play();
+                finalMediaPlayer.play();
             }
         });
 
         // Set ulang pemutaran video setelah selesai, pengguna harus mengklik video
-        mediaPlayer.setOnEndOfMedia(() -> {
-            mediaPlayer.pause(); // Pastikan video berhenti
-            mediaPlayer.seek(mediaPlayer.getStartTime()); // Reset ke awal
+        finalMediaPlayer.setOnEndOfMedia(() -> {
+            finalMediaPlayer.pause(); // Pastikan video berhenti
+            finalMediaPlayer.seek(finalMediaPlayer.getStartTime()); // Reset ke awal
             System.out.println("Video selesai. Klik video untuk memulai ulang.");
         });
 
         // Label durasi
         Label durationLabel = new Label("DURASI:");
         durationLabel.setStyle("-fx-font-size: 14px; -fx-font-weight: bold;");
+
 
         // TextField untuk menampilkan durasi
         TextField durationField = new TextField(String.format("%02d detik", duration));
@@ -95,30 +106,26 @@ public class WorkoutAppWithVideo extends Application {
         durationBox.setAlignment(Pos.CENTER_LEFT);
         HBox.setMargin(durationControlBox, new Insets(0, 0, 0, 10));  // Mengurangi margin di sebelah kiri
 
-        // Instruksi
+        // Description label
         Label instructionsLabel = new Label("INSTRUKSI:");
         instructionsLabel.setStyle("-fx-font-size: 14px; -fx-font-weight: bold;");
-        instructionsLabel.setAlignment(Pos.CENTER_LEFT);
-        TextArea instructionsArea = new TextArea();
-        instructionsArea.setText(
-                "Mulai dari posisi berdiri dengan kaki rapat, lalu lompat dengan kaki terbuka dan telapak tangan bersentuhan di atas kepala. "
-                        + "Kembali ke posisi awal dan lakukan babak berikutnya.\n\n"
-                        + "Latihan ini memberikan olahraga seluruh tubuh dan menggerakkan semua kelompok otot besar Anda."
-        );
-        instructionsArea.setWrapText(true);
-        instructionsArea.setEditable(false);
-        instructionsArea.setStyle("-fx-font-size: 12px;");
-        instructionsArea.setPrefHeight(150);
+        instructionsLabel.setAlignment(Pos.TOP_LEFT);
+        Label descriptionLabel = new Label(description);
+        descriptionLabel.setWrapText(true);
+        descriptionLabel.setStyle("-fx-font-size: 14px; -fx-line-spacing: 1.5;");
 
-        // Layout utama
-        VBox root = new VBox(15, mediaView, durationBox, instructionsLabel, instructionsArea);
+        descriptionLabel.setStyle("-fx-font-size: 14px; -fx-line-spacing: 1.5; -fx-text-alignment: justify;");
+        // Layout
+        VBox root = new VBox(20, mediaView, durationBox, instructionsLabel, descriptionLabel);
         root.setAlignment(Pos.TOP_CENTER);
         root.setPadding(new Insets(15));
-        root.setStyle("-fx-background-color: #F5F5F5;");
 
         // Scene
         Scene scene = new Scene(root, 390, 700);
         primaryStage.setScene(scene);
         primaryStage.show();
+        
+        }
     }
+
 }
